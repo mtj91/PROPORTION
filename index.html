@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PROPORTION — Music Theory Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body data-theme="dark">
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-left">
+      <h1 class="logo">PROPORTION</h1>
+      <span class="tagline">Music · Architecture · Nature</span>
+    </div>
+    <div class="header-controls">
+      <button class="btn-icon" id="btn-sound" title="Toggle sound">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" id="sound-waves"/>
+        </svg>
+      </button>
+      <button class="btn-icon" id="btn-theme" title="Toggle theme">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+      </button>
+      <div class="tuning-select-wrap">
+        <label for="tuning-system">Tuning</label>
+        <select id="tuning-system">
+          <option value="just">Just Intonation</option>
+          <option value="pythagorean">Pythagorean</option>
+          <option value="equal">Equal Temperament</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <section class="sidebar-section">
+        <h3 class="section-title">Base Frequency</h3>
+        <div class="control-row">
+          <input type="range" id="base-freq" min="220" max="880" value="440" step="1" />
+          <span class="value-display" id="base-freq-display">A4 = 440 Hz</span>
+        </div>
+      </section>
+
+      <section class="sidebar-section">
+        <h3 class="section-title">Select Interval</h3>
+        <div class="interval-list" id="interval-list"></div>
+      </section>
+
+      <section class="sidebar-section">
+        <h3 class="section-title">Custom Ratio</h3>
+        <div class="ratio-inputs">
+          <input type="number" id="ratio-num" min="1" max="32" value="3" />
+          <span class="ratio-colon">:</span>
+          <input type="number" id="ratio-den" min="1" max="32" value="2" />
+        </div>
+        <button class="btn-primary" id="btn-apply-ratio">Apply Ratio</button>
+      </section>
+
+      <section class="sidebar-section">
+        <h3 class="section-title">Waveform</h3>
+        <div class="wave-buttons">
+          <button class="wave-btn active" data-wave="sine">Sine</button>
+          <button class="wave-btn" data-wave="triangle">Triangle</button>
+          <button class="wave-btn" data-wave="square">Square</button>
+          <button class="wave-btn" data-wave="sawtooth">Sawtooth</button>
+        </div>
+      </section>
+
+      <section class="sidebar-section">
+        <h3 class="section-title">Domain Analogy</h3>
+        <div class="domain-buttons">
+          <button class="domain-btn active" data-domain="architecture">Architecture</button>
+          <button class="domain-btn" data-domain="nature">Nature</button>
+          <button class="domain-btn" data-domain="typography">Typography</button>
+          <button class="domain-btn" data-domain="design">Design</button>
+        </div>
+      </section>
+
+      <section class="sidebar-section">
+        <h3 class="section-title">Proportion Info</h3>
+        <div class="info-card">
+          <div class="info-ratio" id="info-ratio">3 : 2</div>
+          <div class="info-name" id="info-name">Perfect Fifth</div>
+          <div class="info-cents" id="info-cents">702 cents</div>
+          <div class="info-decimal" id="info-decimal">1.500</div>
+          <div class="info-desc" id="info-desc">The most consonant interval after the octave.</div>
+        </div>
+      </section>
+    </aside>
+
+    <!-- Panels -->
+    <main class="panels-grid">
+
+      <!-- Harmonic Series -->
+      <div class="panel panel-wide" id="panel-harmonic">
+        <div class="panel-header">
+          <h2>Harmonic Series</h2>
+          <div class="panel-actions">
+            <button class="btn-small" id="btn-animate-waves">Animate</button>
+            <button class="btn-small" id="btn-play-interval">▶ Play</button>
+          </div>
+        </div>
+        <canvas id="canvas-harmonic" class="panel-canvas"></canvas>
+        <div class="harmonic-legend" id="harmonic-legend"></div>
+      </div>
+
+      <!-- Architecture Facade (tall — spans 2 rows) -->
+      <div class="panel panel-tall" id="panel-architecture">
+        <div class="panel-header">
+          <h2 id="analogy-panel-title">Architecture</h2>
+          <div class="panel-actions">
+            <select id="facade-style">
+              <option value="classical">Classical</option>
+              <option value="modernist">Modernist</option>
+              <option value="gothic">Gothic</option>
+            </select>
+          </div>
+        </div>
+        <canvas id="canvas-architecture" class="panel-canvas"></canvas>
+
+        <!-- Architecture parameter bar — 3-system model -->
+        <div class="param-bar" id="arch-param-bar">
+          <div class="param-group">
+            <span class="param-label">Scale</span>
+            <div class="seg-group" id="arch-scale">
+              <button class="seg-btn" data-val="intimate">Intimate</button>
+              <button class="seg-btn active" data-val="standard">Standard</button>
+              <button class="seg-btn" data-val="grand">Grand</button>
+            </div>
+          </div>
+          <div class="param-group">
+            <span class="param-label">Treatment</span>
+            <div class="seg-group" id="arch-treatment">
+              <!-- populated dynamically by app.js based on facade style -->
+            </div>
+          </div>
+          <div class="param-group">
+            <span class="param-label">Analysis</span>
+            <div class="seg-group" id="arch-analysis">
+              <button class="seg-btn" data-val="none">None</button>
+              <button class="seg-btn active" data-val="lines">Lines</button>
+              <button class="seg-btn" data-val="grid">Grid</button>
+              <button class="seg-btn" data-val="full">Full</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="architecture-labels" id="architecture-labels"></div>
+      </div>
+
+      <!-- Piano Keyboard (full width) -->
+      <div class="panel panel-full" id="panel-keyboard">
+        <div class="panel-header">
+          <h2>Interactive Keyboard <span style="font-size:0.65rem;opacity:0.5;font-weight:400;font-family:var(--mono)">A–K = notes · Shift+key = interval</span></h2>
+          <div class="panel-actions">
+            <button class="btn-small active" id="btn-highlight-intervals">Show Intervals</button>
+            <button class="btn-small" id="btn-show-ratios">Show Ratios</button>
+            <select id="root-note">
+              <option value="C">C</option><option value="D">D</option><option value="E">E</option>
+              <option value="F">F</option><option value="G">G</option>
+              <option value="A" selected>A</option><option value="B">B</option>
+            </select>
+          </div>
+        </div>
+        <div id="keyboard-container"></div>
+      </div>
+
+      <!-- Musical Golden Ratio (replaces old fibonacci panel) -->
+      <div class="panel" id="panel-golden-music">
+        <div class="panel-header">
+          <h2>Musical Golden Ratio</h2>
+          <div class="panel-actions">
+            <button class="btn-small" id="btn-anim-golden">Animate</button>
+          </div>
+        </div>
+        <canvas id="canvas-golden-music" class="panel-canvas"></canvas>
+      </div>
+
+      <!-- Proportion Wheel -->
+      <div class="panel" id="panel-wheel">
+        <div class="panel-header">
+          <h2>Proportion Wheel</h2>
+        </div>
+        <canvas id="canvas-wheel" class="panel-canvas"></canvas>
+      </div>
+
+      <!-- Golden Architecture (wide) -->
+      <div class="panel panel-wide" id="panel-golden-arch">
+        <div class="panel-header">
+          <h2>Golden Architecture</h2>
+          <div class="panel-actions">
+            <select id="golden-arch-mode">
+              <option value="rooms">Floor Plan</option>
+              <option value="facade">Golden Facade</option>
+              <option value="modulor">Le Corbusier Modulor</option>
+            </select>
+          </div>
+        </div>
+        <canvas id="canvas-golden-arch" class="panel-canvas"></canvas>
+        <div class="architecture-labels" id="golden-arch-labels"></div>
+      </div>
+
+      <!-- Cross-Domain Analogies -->
+      <div class="panel panel-wide" id="panel-analogy">
+        <div class="panel-header">
+          <h2>Cross-Domain Proportions</h2>
+        </div>
+        <!-- Proportion system filter -->
+        <div class="proportion-filter" id="proportion-filter">
+          <span class="filter-label">Filter by proportion:</span>
+          <button class="filter-btn active" data-ratio="">All</button>
+          <button class="filter-btn" data-ratio="1:1">1:1</button>
+          <button class="filter-btn" data-ratio="5:4">5:4</button>
+          <button class="filter-btn" data-ratio="4:3">4:3</button>
+          <button class="filter-btn" data-ratio="3:2">3:2</button>
+          <button class="filter-btn" data-ratio="5:3">5:3</button>
+          <button class="filter-btn" data-ratio="8:5">8:5 ≈φ</button>
+          <button class="filter-btn" data-ratio="2:1">2:1</button>
+          <button class="filter-btn" data-ratio="16:9">16:9</button>
+        </div>
+        <div class="analogy-grid" id="analogy-grid"></div>
+      </div>
+
+    </main>
+  </div>
+
+  <div class="tooltip" id="tooltip"></div>
+
+  <script src="js/harmonic.js"></script>
+  <script src="js/architecture.js"></script>
+  <script src="js/fibonacci.js"></script>
+  <script src="js/wheel.js"></script>
+  <script src="js/analogies.js"></script>
+  <script src="js/keyboard.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
