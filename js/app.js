@@ -41,6 +41,7 @@ var state = {
   waveType: 'sine',
   soundEnabled: true,
   animatingWaves: false,
+  highlightAll: false,
   domain: 'architecture',
   facadeStyle: 'classical',
   showRatios: false,
@@ -49,6 +50,8 @@ var state = {
   // Architecture parameters (3-system model)
   arch: {
     scale: 'standard',    // 'intimate' | 'standard' | 'grand'
+    bays: 5,              // direct bay count (overrides preset when set by slider)
+    floors: 2,            // direct floor count (overrides preset when set by slider)
     treatment: 'ionic',   // classical: doric/ionic/corinthian | modernist: frame/curtain/brise | gothic: simple/tracery/ornate
     analysis: 'lines',    // 'none' | 'lines' | 'grid' | 'full'
   },
@@ -209,11 +212,13 @@ function _updateArchLabels() {
   var n = iv.ratio[0], d = iv.ratio[1];
   var r = (n/d).toFixed(3);
   var sp = _ARCH_SCALE_PRESETS[state.arch.scale] || _ARCH_SCALE_PRESETS.standard;
+  var bays = state.arch.bays || sp.bays;
+  var floors = state.arch.floors || sp.floors;
   document.getElementById('architecture-labels').innerHTML =
     '<span>W:H = ' + n + ':' + d + '</span>' +
     '<span>' + r + '</span>' +
     '<span>' + iv.name + '</span>' +
-    '<span>' + sp.bays + ' bays · ' + sp.floors + ' fl · ' + state.arch.treatment + '</span>';
+    '<span>' + bays + ' bays · ' + floors + ' fl · ' + state.arch.treatment + '</span>';
 
   // Golden arch labels
   var gaLabels = document.getElementById('golden-arch-labels');
@@ -385,6 +390,13 @@ function _initControls() {
     );
   });
 
+  // Highlight all intervals on keyboard
+  document.getElementById('btn-highlight-intervals').addEventListener('click', function() {
+    state.highlightAll = !state.highlightAll;
+    this.classList.toggle('active', state.highlightAll);
+    buildKeyboard(state);
+  });
+
   // Show ratios on keyboard
   document.getElementById('btn-show-ratios').addEventListener('click', function(e) {
     state.showRatios = !state.showRatios;
@@ -450,9 +462,37 @@ function _initControls() {
       state.arch.scale = btn.dataset.val;
       document.querySelectorAll('#arch-scale .seg-btn').forEach(function(b) { b.classList.remove('active'); });
       btn.classList.add('active');
+      // Sync bays/floors sliders to preset values
+      var preset = _ARCH_SCALE_PRESETS[state.arch.scale] || _ARCH_SCALE_PRESETS.standard;
+      state.arch.bays = preset.bays;
+      state.arch.floors = preset.floors;
+      var baysSlider = document.getElementById('arch-bays');
+      var floorsSlider = document.getElementById('arch-floors');
+      if (baysSlider) { baysSlider.value = preset.bays; document.getElementById('bays-display').textContent = preset.bays; }
+      if (floorsSlider) { floorsSlider.value = preset.floors; document.getElementById('floors-display').textContent = preset.floors; }
       _archRedraw();
     });
   });
+
+  // Bays slider
+  var baysSlider = document.getElementById('arch-bays');
+  if (baysSlider) {
+    baysSlider.addEventListener('input', function() {
+      state.arch.bays = +this.value;
+      document.getElementById('bays-display').textContent = this.value;
+      _archRedraw();
+    });
+  }
+
+  // Floors slider
+  var floorsSlider = document.getElementById('arch-floors');
+  if (floorsSlider) {
+    floorsSlider.addEventListener('input', function() {
+      state.arch.floors = +this.value;
+      document.getElementById('floors-display').textContent = this.value;
+      _archRedraw();
+    });
+  }
 
   // Treatment (initial wire-up)
   _updateTreatmentButtons(state.facadeStyle);

@@ -51,6 +51,9 @@ state = {
     analysis,         // 'none' | 'lines' | 'grid' | 'full'
   },
   goldenArchMode,     // 'rooms' | 'facade' | 'modulor'
+  animatingWaves,     // bool — harmonic waveform animation toggle
+  showRatios,         // bool — show ratio labels on keyboard keys
+  rootNote,           // string — root note name, e.g. 'A' (used by keyboard.js)
 }
 ```
 
@@ -63,6 +66,8 @@ Treatment buttons are dynamically rebuilt by `_updateTreatmentButtons(facadeStyl
 Every canvas visualizer follows: `draw*(canvas, ...params)` → reads `document.body.dataset.theme` for dark/light, uses `canvas.width`/`canvas.height` (set by `resizeAllCanvases()` on load and resize).
 
 The boot sequence double-`requestAnimationFrame`s before calling `resizeAllCanvases()` to ensure layout is complete before canvas dimensions are measured.
+
+Canvas heights are fixed in `CANVAS_HEIGHTS` (in `app.js`) — a map of canvas element IDs to pixel heights. When adding a new canvas panel, add its ID and height here.
 
 ## Architecture Canvas Routing
 

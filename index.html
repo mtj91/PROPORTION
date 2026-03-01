@@ -15,6 +15,7 @@
       <span class="tagline">Music · Architecture · Nature</span>
     </div>
     <div class="header-controls">
+      <button class="btn-small btn-learn-header" id="btn-learn" title="Interactive Learning">Learn</button>
       <button class="btn-icon" id="btn-sound" title="Toggle sound">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
@@ -155,6 +156,16 @@
               <button class="seg-btn" data-val="full">Full</button>
             </div>
           </div>
+          <div class="param-group arch-dim-group">
+            <span class="param-label">Width</span>
+            <input type="range" id="arch-bays" min="2" max="10" value="5" step="1" class="arch-dim-slider">
+            <span class="arch-dim-val"><span id="bays-display">5</span> bays</span>
+          </div>
+          <div class="param-group arch-dim-group">
+            <span class="param-label">Height</span>
+            <input type="range" id="arch-floors" min="1" max="6" value="2" step="1" class="arch-dim-slider">
+            <span class="arch-dim-val"><span id="floors-display">2</span> fl</span>
+          </div>
         </div>
 
         <div class="architecture-labels" id="architecture-labels"></div>
@@ -165,7 +176,7 @@
         <div class="panel-header">
           <h2>Interactive Keyboard <span style="font-size:0.65rem;opacity:0.5;font-weight:400;font-family:var(--mono)">A–K = notes · Shift+key = interval</span></h2>
           <div class="panel-actions">
-            <button class="btn-small active" id="btn-highlight-intervals">Show Intervals</button>
+            <button class="btn-small" id="btn-highlight-intervals">Show Intervals</button>
             <button class="btn-small" id="btn-show-ratios">Show Ratios</button>
             <select id="root-note">
               <option value="C">C</option><option value="D">D</option><option value="E">E</option>
@@ -238,12 +249,35 @@
 
   <div class="tooltip" id="tooltip"></div>
 
+  <!-- Learning Overlay -->
+  <div id="learn-overlay">
+    <div class="learn-header">
+      <div class="learn-title-row">
+        <span class="learn-logo">PROPORTION — Learn</span>
+        <div class="learn-progress-wrap">
+          <span class="learn-progress-label" id="learn-progress-label">0 / 17</span>
+          <div class="learn-progress-bar"><div class="learn-progress-fill" id="learn-progress-fill"></div></div>
+        </div>
+        <button class="btn-icon learn-close-btn" id="learn-close" title="Close (Esc)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="learn-body">
+      <nav class="learn-nav" id="learn-nav"></nav>
+      <div class="learn-content" id="learn-content"></div>
+    </div>
+  </div>
+
   <script src="js/harmonic.js"></script>
   <script src="js/architecture.js"></script>
   <script src="js/fibonacci.js"></script>
   <script src="js/wheel.js"></script>
   <script src="js/analogies.js"></script>
   <script src="js/keyboard.js"></script>
+  <script src="js/learn.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

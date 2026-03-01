@@ -67,10 +67,20 @@ function buildKeyboard(state) {
 
     if (isRoot) {
       key.classList.add('highlighted-root');
-    } else if (matchedIv) {
-      key.classList.add('highlighted-interval');
-      key.style.background = isBlack ? _kbShade(ivColor, -30) : _kbLighten(ivColor);
-      key.style.borderColor = ivColor;
+    } else if (state.highlightAll) {
+      if (matchedIv) {
+        var allColor = COLOR_MAP_KB[matchedIv.color] || '#6c8eff';
+        key.classList.add('highlighted-interval');
+        key.style.background = isBlack ? _kbShade(allColor, -30) : _kbLighten(allColor);
+        key.style.borderColor = allColor;
+      }
+    } else {
+      var selectedSemis = Math.round(state.selectedInterval.cents / 100);
+      if (semiFromRoot === selectedSemis) {
+        key.classList.add('highlighted-interval');
+        key.style.background = isBlack ? _kbShade(ivColor, -30) : _kbLighten(ivColor);
+        key.style.borderColor = ivColor;
+      }
     }
 
     var labelEl = document.createElement('div');

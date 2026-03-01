@@ -47,8 +47,9 @@ function _drawProportionalFacade(ctx, W, H, interval, style, isDark, as) {
   //    Also supports old format (bays / floors / order / showLines / showGrid)
   var _SP = { intimate:{bays:3,floors:1}, standard:{bays:5,floors:2}, grand:{bays:7,floors:3} };
   var _classicTreat = { doric:1, ionic:1, corinthian:1, none:1 };
-  var bays      = as.scale ? (_SP[as.scale]||_SP.standard).bays         : (as.bays   || 5);
-  var floors    = as.scale ? (_SP[as.scale]||_SP.standard).floors       : (as.floors || 2);
+  var _spFallback = _SP[as.scale || 'standard'] || _SP.standard;
+  var bays   = as.bays   || _spFallback.bays;
+  var floors = as.floors || _spFallback.floors;
   var order     = as.scale
                     ? (_classicTreat[as.treatment] ? (as.treatment||'ionic') : 'none')
                     : (as.order || 'ionic');
@@ -247,8 +248,8 @@ function _drawModernistFacade(ctx, W, H, interval, isDark, as) {
   // Derive parameters
   var _SP = { intimate:{bays:3,floors:2}, standard:{bays:5,floors:3}, grand:{bays:7,floors:4} };
   var preset = _SP[as.scale] || _SP.standard;
-  var bays    = preset.bays;
-  var floors  = preset.floors;
+  var bays   = as.bays   || preset.bays;
+  var floors = as.floors || preset.floors;
   var treatment = as.treatment || 'curtain'; // frame | curtain | brise
   var showLines = as.analysis === 'lines' || as.analysis === 'full';
   var showGrid  = as.analysis === 'grid'  || as.analysis === 'full';
